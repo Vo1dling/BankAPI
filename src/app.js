@@ -45,8 +45,8 @@ app.post("/users", (req, res) => {
   }
 });
 
-app.put("/users/:type/:id", (req, res) => {
-  const { id, type } = req.params;
+app.put("/users/:action/:id", (req, res) => {
+  const { id, action } = req.params;
   fs.readFile(pathToUsers, "utf-8", (err, data) => {
     const users = err ? [] : JSON.parse(data);
     const currentUser = users.find((user) => user.id === +id);
@@ -54,12 +54,12 @@ app.put("/users/:type/:id", (req, res) => {
     if (!currentUser) {
       res.send("Couldn't find User");
     } else {
-      if (type === "deposit") {
+      if (action === "deposit") {
         const { cashToDeposit } = req.body;
         if (cashToDeposit)
           if (cashToDeposit > 0) currentUser.cash += +cashToDeposit;
           else message = "Amount is negative";
-      } else if (type === "withdraw") {
+      } else if (action === "withdraw") {
         const { cashToWithdraw } = req.body;
         if (cashToWithdraw > 0) {
           if (
@@ -76,12 +76,12 @@ app.put("/users/:type/:id", (req, res) => {
             message = "Not Enough Money in the Account";
           }
         } else message = "Amount is negative";
-      } else if (type === "credit") {
+      } else if (action === "credit") {
         const { newCredit } = req.body;
         if (newCredit)
           if (newCredit > 0) currentUser.credit = +newCredit;
           else message = "Amount is negative";
-      } else if (type === "transfer") {
+      } else if (action === "transfer") {
         const { amountToTransfer, targetId } = req.body;
         if (amountToTransfer) {
           if (

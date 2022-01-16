@@ -27,7 +27,7 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const { id = 0, cash = 0, credit = 0 } = req.body;
-  const dataBuffer = fs.readFile(pathToUsers, "utf-8");
+  const dataBuffer = fs.readFileSync(pathToUsers, "utf-8");
   const users = JSON.parse(dataBuffer);
 
   if (users.find((account) => account.id === id)) {
@@ -39,7 +39,7 @@ app.post("/users", (req, res) => {
     } else {
       const obj = { id, cash, credit };
       users.push(obj);
-      fs.writeFile(pathToUsers, JSON.stringify(users));
+      fs.writeFileSync(pathToUsers, JSON.stringify(users));
       res.send(users);
     }
   }
@@ -47,6 +47,8 @@ app.post("/users", (req, res) => {
 
 app.put("/users/:action/:id", (req, res) => {
   const { id, action } = req.params;
+  console.log(action);
+
   fs.readFile(pathToUsers, "utf-8", (err, data) => {
     const users = err ? [] : JSON.parse(data);
     const currentUser = users.find((user) => user.id === +id);
